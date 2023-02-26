@@ -54,6 +54,10 @@ helpscreen() {
 	echo ""
 	echo "-h : Shows this fucking help menu"
 	echo ""
+	echo "Eg:"
+	echo "wallhaven -c 010 -p 100 -q 1920x1080 -r 16x9 -s toplist"
+	echo "wallhaven -c 011 -p 010 -s hot"
+	echo ""
 }
 #defaults
 
