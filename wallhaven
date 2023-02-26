@@ -1,0 +1,98 @@
+#!/usr/bin/env bash
+
+if [ ! -d $HOME/Pictures/Wallhaven ]
+then
+	mkdir -p $HOME/Pictures/Wallhaven
+fi
+
+helpscreen() { 
+	echo ""
+	echo "This script downloads a random wallpaper from wallhaven according to the given contraints"
+	echo ""
+	echo "Usage: wallhaven [-c -p -q -r -s -t -h searchterm ]"
+	echo ""
+	echo "All wallpapers are downloaded to $HOME/Pictures/Wallhaven"
+	echo ""
+	echo "Options:"
+	echo "-c : Category:"
+	echo "		001 for People."
+	echo "		010 for Anime"
+	echo "		011 for Anime + People"
+	echo "		100 for General"
+	echo "		101 for General + People"
+	echo "		110 for General + Anime"
+	echo "		111 for General + Anime + People"
+	echo ""
+	echo " -p : Purity:"
+	echo "		100 for SFW"
+	echo "		010 for Sketchy aka Lewd"
+	echo "		110 for SFW and Sketchy"
+	echo ""
+	echo " -q : Minimum Quality / Resolution a wallpaper should be in:"
+	echo "		1920x1080"
+	echo "		3840x2160 etc etc "
+	echo "      All available resolution can be found on wallhaven.cc "
+	echo ""
+	echo " -r : Aspect Ratio:"
+	echo "		landscape (finds wallpapers in landscape orientation)"
+	echo "		portrait (finds wallpapers in portrait orientation)"
+	echo "		16x9"
+	echo "		9x18 etc etc" 
+	echo "      All available resolution can be found on wallhaven.cc "
+	echo ""
+	echo " -s : Sort value:"
+	echo "		relevance"
+	echo "		random"
+	echo "		date_added"
+	echo "		views"
+	echo "		favourites"
+	echo "		toplist"
+	echo "		hot"
+	echo ""
+	echo "Search Term: (no flag needed)"
+	echo "	Can be any search term that wallhaven accepts"
+	echo ""
+	echo "-h : Shows this fucking help menu"
+	echo ""
+}
+#defaults
+
+category=111
+purity=100
+res=1920x1080
+ratio=16x9
+sorting=random
+
+# defaults get updated here
+while getopts 'c:p:q:r:s:h' opt; do
+	case "$opt" in
+		c)
+			category=$OPTARG
+			;;
+		p)
+			purity="$OPTARG"
+			;;
+		q)
+			res="$OPTARG"
+			;;
+		r)
+			ratio="$OPTARG"
+			;;
+		s)
+			sorting="$OPTARG"
+			;;
+		h)
+			helpscreen
+			exit 0
+			;;
+		esac
+	done
+	shift "$(($OPTIND -1))"
+
+
+searchterm=$*
+
+random=$(curl "https://wallhaven.cc/search?q=$searchterm&categories=$category&purity=$purity&atleast=$res&ratios=$ratio&sorting=$sorting&order=desc" | grep -o 'href="https://wallhaven.cc/w/[0-9a-zA-Z]*"' | cut -d\" -f2 | shuf -n 1 | cut -d\/ -f5)
+
+wget $(curl https://wallhaven.cc/w/$random | grep -o 'https://w.wallhaven.cc/full/[0-9a-z./-]*') -P $HOME/Pictures/Wallhaven/
+
