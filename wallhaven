@@ -59,13 +59,13 @@ helpscreen() {
 	echo "wallhaven -c 011 -p 010 -s hot"
 	echo ""
 }
-#defaults
 
+#defaults
 category=111
 purity=100
 res=1920x1080
-ratio=16x9
-sorting=random
+ratio=landscape
+sorting=toplist
 
 # defaults get updated here
 while getopts 'c:p:q:r:s:h' opt; do
